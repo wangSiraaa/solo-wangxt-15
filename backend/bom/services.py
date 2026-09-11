@@ -13,6 +13,11 @@ from .models import BOMLine, BOMVersion, SubstituteRule
 # BOM 树
 # ---------------------------------------------------------------------------
 
+def _qty(value) -> str:
+    """Decimal → 无尾零、无科学计数法的字符串（10.0000 → "10"）。"""
+    return format(value.normalize(), "f")
+
+
 def build_tree(version: BOMVersion):
     """把版本的 BOMLine 拍平结果组装成嵌套树。
 
@@ -30,7 +35,7 @@ def build_tree(version: BOMVersion):
             "name": ln.material.name,
             "spec": ln.material.spec,
             "unit": ln.material.unit,
-            "quantity": str(ln.quantity.normalize()),
+            "quantity": _qty(ln.quantity),
             "children": [],
             "_parent_id": ln.parent_id,
             "_sort": (ln.sort_order, ln.id),
